@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-handwriting: "Caveat", cursive;
+  
+  --color-paper: #f9f8f6;
+  --color-ink: #1a1a1a;
+  --color-accent: #e5e5e5;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* Subtle paper texture with a bit more grain */
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  .polaroid {
+    @apply bg-[#faf9f6] p-4 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-zinc-200/60 rotate-[-1.5deg] hover:rotate-0 hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] transition-all duration-500 relative;
+  }
+  
+  .polaroid::before {
+    content: '';
+    @apply absolute top-3 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-zinc-300 shadow-inner opacity-90;
+    /* Simulate a pin */
+    background: radial-gradient(circle at 30% 30%, #f4f4f5, #a1a1aa);
+    box-shadow: 1px 2px 3px rgba(0,0,0,0.4), inset -1px -1px 2px rgba(0,0,0,0.3);
+  }
+
+  .polaroid-alt {
+    @apply bg-[#faf9f6] p-4 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-zinc-200/60 rotate-[1.5deg] hover:rotate-0 hover:shadow-[0_12px_40px_rgb(0,0,0,0.12)] transition-all duration-500 relative;
+  }
+  
+  .polaroid-alt::before {
+    content: '';
+    @apply absolute top-3 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-zinc-300 shadow-inner opacity-90;
+    background: radial-gradient(circle at 30% 30%, #f4f4f5, #a1a1aa);
+    box-shadow: 1px 2px 3px rgba(0,0,0,0.4), inset -1px -1px 2px rgba(0,0,0,0.3);
+  }
+
+  .handwritten {
+    font-family: var(--font-handwriting);
+    @apply text-2xl text-zinc-600 tracking-wide;
+  }
+
+  .torn-edge-bottom {
+    position: relative;
+  }
+  
+  .torn-edge-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 20' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L0,10 Q10,20 20,10 T40,10 T60,10 T80,10 T100,10 T120,10 T140,10 T160,10 T180,10 T200,10 T220,10 T240,10 T260,10 T280,10 T300,10 T320,10 T340,10 T360,10 T380,10 T400,10 T420,10 T440,10 T460,10 T480,10 T500,10 T520,10 T540,10 T560,10 T580,10 T600,10 T620,10 T640,10 T660,10 T680,10 T700,10 T720,10 T740,10 T760,10 T780,10 T800,10 T820,10 T840,10 T860,10 T880,10 T900,10 T920,10 T940,10 T960,10 T980,10 T1000,10 T1020,10 T1040,10 T1060,10 T1080,10 T1100,10 T1120,10 T1140,10 T1160,10 T1180,10 T1200,10 L1200,0 Z' fill='%23f9f8f6'/%3E%3C/svg%3E");
+    background-size: 100px 100%;
+    z-index: 10;
+  }
+}
