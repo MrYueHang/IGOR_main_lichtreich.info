@@ -15,7 +15,8 @@ import {
   Share2,
   Bot,
   LogOut,
-  LayoutDashboard
+  LayoutDashboard,
+  Database
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -28,6 +29,7 @@ const navigation = [
   { name: 'Profil & Account', href: '/admin/profile', icon: User },
   { name: 'Contenttable', href: '/admin/content', icon: FileText },
   { name: 'Workingspace', href: '/admin/workspace', icon: Briefcase },
+  { name: 'Databases (Muster)', href: '/admin/databases', icon: Database },
   { name: 'Terminplaner', href: '/admin/calendar', icon: Calendar },
   { name: 'Gallerie', href: '/admin/gallery', icon: ImageIcon },
   { name: 'Preise', href: '/admin/prices', icon: DollarSign },

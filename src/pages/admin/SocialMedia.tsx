@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Instagram, Facebook, MessageCircle, Send, Image as ImageIcon, Smartphone, ArrowRight, Calendar as CalendarIcon, Clock, Plus } from 'lucide-react';
+import AIStrategyPlanner from '../../components/admin/AIStrategyPlanner';
 
 interface ScheduledPost {
   id: string;
@@ -23,12 +24,22 @@ export default function SocialMedia() {
     setNewPost({ platform: 'instagram', content: '', date: '', time: '' });
   };
 
+  const handlePushToAction = (strategy: string) => {
+    // Pre-fill the content field with a snippet or the full strategy
+    setNewPost(prev => ({ ...prev, content: `[KI Strategie Entwurf]\n${strategy}` }));
+    // Scroll to the form
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  };
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-zinc-900 mb-2">Social Media & Workflow</h1>
         <p className="text-zinc-600">Strategische Projektvermarktung: Von der Leinwand bis zur digitalen Präsenz.</p>
       </div>
+
+      {/* AI Strategy Planner */}
+      <AIStrategyPlanner type="social" onPushToAction={handlePushToAction} />
 
       {/* Workflow Visualization */}
       <div className="bg-white rounded-xl border border-zinc-200 shadow-sm p-8">

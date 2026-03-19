@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { initialProjects, Project } from '../../data/projects';
 import { CheckCircle2, Circle, Plus, Trash2 } from 'lucide-react';
+import AIStrategyPlanner from '../../components/admin/AIStrategyPlanner';
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -65,6 +66,27 @@ export default function AdminProjects() {
     saveProjects(updated);
   };
 
+  const handlePushToAction = (strategy: string) => {
+    // Create a new project based on the strategy
+    const newProject: Project = {
+      id: Date.now().toString(),
+      title: 'Neues KI-Projekt',
+      description: 'KI-generierte Strategie',
+      year: new Date().getFullYear().toString(),
+      location: 'TBD',
+      status: 'In Planung',
+      checklist: [
+        { id: Date.now().toString() + '1', text: 'Strategie überprüfen', completed: false },
+        { id: Date.now().toString() + '2', text: 'Ressourcen planen', completed: false }
+      ]
+    };
+    
+    // In a real app, we might parse the strategy to extract checklist items
+    const updated = [newProject, ...projects];
+    saveProjects(updated);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
@@ -77,6 +99,9 @@ export default function AdminProjects() {
           Neues Projekt
         </button>
       </div>
+
+      {/* AI Strategy Planner */}
+      <AIStrategyPlanner type="project" onPushToAction={handlePushToAction} />
 
       <div className="grid grid-cols-1 gap-6">
         {projects.map(project => (
