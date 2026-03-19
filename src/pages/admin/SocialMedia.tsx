@@ -4,7 +4,7 @@ import AIStrategyPlanner from '../../components/admin/AIStrategyPlanner';
 
 interface ScheduledPost {
   id: string;
-  platform: 'instagram' | 'facebook';
+  platform: 'instagram' | 'facebook' | 'linkedin';
   content: string;
   date: string;
   time: string;
@@ -25,9 +25,57 @@ export default function SocialMedia() {
   };
 
   const handlePushToAction = (strategy: string) => {
-    // Pre-fill the content field with a snippet or the full strategy
+    // Parse the strategy to create multiple posts if it looks like a multi-post plan
+    // This is a simple heuristic: split by "Post", "Woche", or "Tag"
+    const lines = strategy.split('\n').filter(l => l.trim().length > 0);
+    const newPosts: ScheduledPost[] = [];
+    let currentDate = new Date();
+    
+    // If it's a long strategy, try to extract posts
+    if (lines.length > 5) {
+      let currentContent = '';
+      let platform: 'instagram' | 'linkedin' | 'facebook' = 'instagram';
+      
+      lines.forEach((line, index) => {
+        if (line.toLowerCase().includes('linkedin')) platform = 'linkedin';
+        else if (line.toLowerCase().includes('instagram')) platform = 'instagram';
+        
+        if (line.match(/^(Woche|Tag|Post|Reel|Carousel|Story) \d+:/i) || line.match(/^\*\*.*(Woche|Tag|Post).*\*\*/i)) {
+          if (currentContent) {
+            newPosts.push({
+              id: Date.now().toString() + index,
+              platform,
+              content: currentContent.trim(),
+              date: currentDate.toISOString().split('T')[0],
+              time: '12:00'
+            });
+            currentDate.setDate(currentDate.getDate() + 2); // Schedule every 2 days
+          }
+          currentContent = line + '\n';
+        } else {
+          currentContent += line + '\n';
+        }
+      });
+      
+      if (currentContent) {
+        newPosts.push({
+          id: Date.now().toString() + 'last',
+          platform,
+          content: currentContent.trim(),
+          date: currentDate.toISOString().split('T')[0],
+          time: '12:00'
+        });
+      }
+      
+      if (newPosts.length > 0) {
+        setPosts([...posts, ...newPosts]);
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        return;
+      }
+    }
+
+    // Fallback: just put it in the new post form
     setNewPost(prev => ({ ...prev, content: `[KI Strategie Entwurf]\n${strategy}` }));
-    // Scroll to the form
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   };
 
@@ -86,11 +134,12 @@ export default function SocialMedia() {
               <label className="block text-sm font-medium text-zinc-700 mb-1">Plattform</label>
               <select 
                 value={newPost.platform}
-                onChange={(e) => setNewPost({...newPost, platform: e.target.value as 'instagram' | 'facebook'})}
+                onChange={(e) => setNewPost({...newPost, platform: e.target.value as 'instagram' | 'facebook' | 'linkedin'})}
                 className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:ring-zinc-500"
               >
                 <option value="instagram">Instagram</option>
                 <option value="facebook">Facebook</option>
+                <option value="linkedin">LinkedIn</option>
               </select>
             </div>
             <div>
@@ -146,8 +195,10 @@ export default function SocialMedia() {
                   <div className="flex items-center gap-2">
                     {post.platform === 'instagram' ? (
                       <Instagram className="w-4 h-4 text-pink-600" />
-                    ) : (
+                    ) : post.platform === 'facebook' ? (
                       <Facebook className="w-4 h-4 text-blue-600" />
+                    ) : (
+                      <span className="font-bold text-blue-700 text-sm">in</span>
                     )}
                     <span className="text-sm font-medium text-zinc-900 capitalize">{post.platform}</span>
                   </div>

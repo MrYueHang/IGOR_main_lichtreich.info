@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Filter } from 'lucide-react';
 
-const artworks = [
+const defaultArtworks = [
   {
     title: 'Hotel Hospital',
     year: '2007–2013',
@@ -34,11 +34,28 @@ const artworks = [
 ];
 
 export default function Gallery() {
+  const [artworks, setArtworks] = useState<any[]>(defaultArtworks);
   const [selectedSeries, setSelectedSeries] = useState<string>('Alle');
   const [selectedYear, setSelectedYear] = useState<string>('Alle');
 
-  const seriesOptions = useMemo(() => ['Alle', ...Array.from(new Set(artworks.map(a => a.series)))], []);
-  const yearOptions = useMemo(() => ['Alle', ...Array.from(new Set(artworks.map(a => a.year)))], []);
+  useEffect(() => {
+    const stored = localStorage.getItem('igor_gallery_locations');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Map the admin data structure to the public gallery structure
+      const mapped = parsed.map((a: any) => ({
+        title: a.title,
+        year: a.year,
+        series: a.series,
+        description: a.description,
+        image: a.imageUrl,
+      }));
+      setArtworks(mapped);
+    }
+  }, []);
+
+  const seriesOptions = useMemo(() => ['Alle', ...Array.from(new Set(artworks.map(a => a.series)))], [artworks]);
+  const yearOptions = useMemo(() => ['Alle', ...Array.from(new Set(artworks.map(a => a.year)))], [artworks]);
 
   const filteredArtworks = useMemo(() => {
     return artworks.filter(art => {
@@ -46,7 +63,7 @@ export default function Gallery() {
       const matchYear = selectedYear === 'Alle' || art.year === selectedYear;
       return matchSeries && matchYear;
     });
-  }, [selectedSeries, selectedYear]);
+  }, [artworks, selectedSeries, selectedYear]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">

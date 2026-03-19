@@ -67,23 +67,54 @@ export default function AdminProjects() {
   };
 
   const handlePushToAction = (strategy: string) => {
-    // Create a new project based on the strategy
-    const newProject: Project = {
-      id: Date.now().toString(),
-      title: 'Neues KI-Projekt',
-      description: 'KI-generierte Strategie',
-      year: new Date().getFullYear().toString(),
-      location: 'TBD',
-      status: 'In Planung',
-      checklist: [
-        { id: Date.now().toString() + '1', text: 'Strategie überprüfen', completed: false },
-        { id: Date.now().toString() + '2', text: 'Ressourcen planen', completed: false }
-      ]
-    };
+    // Parse the strategy to extract checklist items
+    const lines = strategy.split('\n');
+    const newItems: { id: string; text: string; completed: boolean }[] = [];
     
-    // In a real app, we might parse the strategy to extract checklist items
-    const updated = [newProject, ...projects];
-    saveProjects(updated);
+    lines.forEach((line, index) => {
+      // Look for lines that look like tasks (e.g., "- Task", "* Task", "1. Task")
+      const match = line.match(/^(\s*[-*]|\d+\.)\s+(.+)$/);
+      if (match && match[2].trim()) {
+        newItems.push({
+          id: Date.now().toString() + index,
+          text: match[2].trim(),
+          completed: false
+        });
+      }
+    });
+
+    if (newItems.length === 0) {
+      newItems.push({ id: Date.now().toString() + '1', text: 'Strategie überprüfen', completed: false });
+    }
+
+    // Check if "Studio-Aufbau Zenica" exists
+    const targetProjectIndex = projects.findIndex(p => p.title.includes('Zenica'));
+    
+    if (targetProjectIndex >= 0) {
+      // Append to existing project
+      const updated = [...projects];
+      updated[targetProjectIndex] = {
+        ...updated[targetProjectIndex],
+        checklist: [...updated[targetProjectIndex].checklist, ...newItems]
+      };
+      saveProjects(updated);
+      alert(`Strategie erfolgreich als Checklisten-Punkte zum Projekt "${updated[targetProjectIndex].title}" hinzugefügt.`);
+    } else {
+      // Create a new project based on the strategy
+      const newProject: Project = {
+        id: Date.now().toString(),
+        title: 'Neues KI-Projekt: Die Brücke von Zenica nach Berlin',
+        description: 'KI-generierte Strategie',
+        year: new Date().getFullYear().toString(),
+        location: 'Zenica / Berlin',
+        status: 'In Planung',
+        checklist: newItems
+      };
+      
+      const updated = [newProject, ...projects];
+      saveProjects(updated);
+      alert('Neues Projekt mit KI-Strategie erstellt.');
+    }
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
   };
 

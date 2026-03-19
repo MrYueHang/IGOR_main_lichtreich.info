@@ -16,7 +16,8 @@ import {
   Bot,
   LogOut,
   LayoutDashboard,
-  Database
+  Database,
+  Map as MapIcon
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -32,6 +33,7 @@ const navigation = [
   { name: 'Databases (Muster)', href: '/admin/databases', icon: Database },
   { name: 'Terminplaner', href: '/admin/calendar', icon: Calendar },
   { name: 'Gallerie', href: '/admin/gallery', icon: ImageIcon },
+  { name: 'Standorte', href: '/admin/locations', icon: MapIcon },
   { name: 'Preise', href: '/admin/prices', icon: DollarSign },
   { name: 'Projekte', href: '/admin/projects', icon: FolderOpen },
   { name: 'Checklisten', href: '/admin/checklists', icon: CheckSquare },

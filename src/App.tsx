@@ -31,6 +31,7 @@ import Checklists from './pages/admin/Checklists';
 import SocialMedia from './pages/admin/SocialMedia';
 import AIAssistant from './pages/admin/AIAssistant';
 import AdminDatabases from './pages/admin/AdminDatabases';
+import Locations from './pages/admin/Locations';
 
 export default function App() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
           <Route path="databases" element={<AdminDatabases />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="gallery" element={<AdminGallery />} />
+          <Route path="locations" element={<Locations />} />
           <Route path="prices" element={<AdminPrices />} />
           <Route path="projects" element={<AdminProjects />} />
           <Route path="checklists" element={<Checklists />} />
