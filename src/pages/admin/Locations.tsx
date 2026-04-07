@@ -136,22 +136,90 @@ export default function Locations() {
 
   if (!hasValidKey) {
     return (
-      <div className="flex flex-col items-center justify-center h-[600px] bg-white rounded-xl border border-zinc-200 shadow-sm p-8 text-center">
-        <div className="w-16 h-16 bg-zinc-100 rounded-full flex items-center justify-center mb-4">
-          <MapPin className="w-8 h-8 text-zinc-400" />
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-900 mb-2">Kunst-Standorte (Mock-Ansicht)</h1>
+          <p className="text-zinc-600">Geografische Übersicht (Dummy-Modus ohne Google Maps API Key).</p>
         </div>
-        <h2 className="text-xl font-bold text-zinc-900 mb-2">Google Maps API Key erforderlich</h2>
-        <p className="text-zinc-600 max-w-md mb-6">
-          Um die geografische Übersicht der Kunstwerke zu sehen, wird ein Google Maps API Key benötigt.
-        </p>
-        <div className="text-left bg-zinc-50 p-4 rounded-lg border border-zinc-200 w-full max-w-lg text-sm">
-          <p className="font-medium text-zinc-900 mb-2">So fügst du den Key hinzu:</p>
-          <ol className="list-decimal list-inside space-y-2 text-zinc-600">
-            <li>Öffne die <strong>Settings</strong> (⚙️ Icon oben rechts)</li>
-            <li>Wähle <strong>Secrets</strong></li>
-            <li>Füge <code>GOOGLE_MAPS_PLATFORM_KEY</code> als Namen hinzu</li>
-            <li>Füge deinen API Key als Wert ein und drücke Enter</li>
-          </ol>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3 bg-zinc-100 rounded-xl border border-zinc-200 shadow-sm overflow-hidden h-[700px] relative flex items-center justify-center">
+            {/* Mock Map Background */}
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+            
+            {/* Mock Markers */}
+            {artworks.map((artwork, index) => {
+              // Generate pseudo-random positions based on coordinates for the mock view
+              const top = `${Math.abs((artwork.coordinates.lat * 10) % 80) + 10}%`;
+              const left = `${Math.abs((artwork.coordinates.lng * 10) % 80) + 10}%`;
+              
+              return (
+                <div key={artwork.id} className="absolute group cursor-pointer" style={{ top, left }}>
+                  <div className="relative -translate-x-1/2 -translate-y-full">
+                    <div className="w-6 h-6 rounded-full border-2 border-white shadow-md flex items-center justify-center" style={{ backgroundColor: getLocationColor(artwork.locationType) }}>
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                    {/* Tooltip */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-white rounded-lg shadow-xl border border-zinc-200 p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                      <div className="aspect-video bg-zinc-100 rounded-md overflow-hidden mb-2">
+                        <img src={artwork.imageUrl} alt={artwork.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      </div>
+                      <h3 className="font-bold text-xs text-zinc-900 leading-tight mb-1">{artwork.title}</h3>
+                      <p className="text-[10px] text-zinc-500">{artwork.locationName}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            
+            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg border border-zinc-200 shadow-sm text-sm text-zinc-600">
+              <strong>Hinweis:</strong> Dies ist eine Dummy-Karte. Füge einen <code>GOOGLE_MAPS_PLATFORM_KEY</code> in den Settings hinzu, um die echte Karte zu sehen.
+            </div>
+          </div>
+
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white rounded-xl border border-zinc-200 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-zinc-900 mb-4">Legende</h2>
+              <div className="space-y-3">
+                {(['Galerie', 'Atelier', 'Fundus', 'Uni', 'Event', 'Netzwerk', 'Kunde'] as const).map(type => (
+                  <div key={type} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: getLocationColor(type) }} />
+                      <span className="text-sm font-medium text-zinc-700">{type}</span>
+                    </div>
+                    <span className="text-xs text-zinc-500 font-mono">
+                      {artworks.filter(a => a.locationType === type).length}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col h-[400px]">
+              <div className="p-4 border-b border-zinc-200 bg-zinc-50">
+                <h2 className="text-sm font-bold text-zinc-900">Aktuelle Standorte</h2>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {artworks.map(artwork => (
+                  <div key={artwork.id} className="flex gap-3 items-start">
+                    <div className="w-12 h-12 bg-zinc-100 rounded-md overflow-hidden shrink-0">
+                      <img src={artwork.imageUrl} alt={artwork.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    </div>
+                    <div>
+                      <h3 className="text-xs font-bold text-zinc-900 line-clamp-1">{artwork.title}</h3>
+                      <p className="text-[10px] text-zinc-500">{artwork.locationName}</p>
+                      <span 
+                        className="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-bold text-white"
+                        style={{ backgroundColor: getLocationColor(artwork.locationType) }}
+                      >
+                        {artwork.locationType}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

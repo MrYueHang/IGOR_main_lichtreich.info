@@ -17,7 +17,9 @@ import {
   LogOut,
   LayoutDashboard,
   Database,
-  Map as MapIcon
+  Map as MapIcon,
+  Files,
+  Ticket
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -30,6 +32,7 @@ const navigation = [
   { name: 'Profil & Account', href: '/admin/profile', icon: User },
   { name: 'Contenttable', href: '/admin/content', icon: FileText },
   { name: 'Workingspace', href: '/admin/workspace', icon: Briefcase },
+  { name: 'Posteingang & Belege', href: '/admin/documents', icon: Files },
   { name: 'Databases (Muster)', href: '/admin/databases', icon: Database },
   { name: 'Terminplaner', href: '/admin/calendar', icon: Calendar },
   { name: 'Gallerie', href: '/admin/gallery', icon: ImageIcon },
@@ -39,6 +42,7 @@ const navigation = [
   { name: 'Checklisten', href: '/admin/checklists', icon: CheckSquare },
   { name: 'Social Media', href: '/admin/social', icon: Share2 },
   { name: 'KI-Assistenz', href: '/admin/ai', icon: Bot },
+  { name: 'Tickets & Backlog', href: '/admin/tickets', icon: Ticket },
 ];
 
 export default function AdminLayout() {
